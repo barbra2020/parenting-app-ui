@@ -10,6 +10,7 @@ import { RapidProFlowExport } from "./rapid-pro-export.model";
 import { CONVERSATION } from "src/app/shared/services/data/data.service";
 import { throwError } from "rxjs";
 import { ChatActionService } from "../common/chat-action.service";
+import { HabitService } from "src/app/shared/services/habit/habit.service";
 
 export type FlowStatusChange = {
   name: string;
@@ -33,7 +34,8 @@ export class OfflineChatService implements IChatService {
     protected http: HttpClient,
     protected contactFieldService: ContactFieldService,
     protected settingsService: SettingsService,
-    private chatActions: ChatActionService
+    private chatActions: ChatActionService,
+    private habitService: HabitService
   ) {
     this.init();
   }
@@ -93,7 +95,6 @@ export class OfflineChatService implements IChatService {
 
   private handleFlowsEnded() {
     console.log("all flows have ended", this.flowsStack);
-    this.messages$.next([{ sender: "bot", text: "End of this content" }]);
   }
 
   /**
@@ -104,7 +105,10 @@ export class OfflineChatService implements IChatService {
     this.flowStatus$.subscribe((events) => {
       try {
         console.log("Flow status change", events);
-        if (events.length > 0) {
+        if (events.length 
+          
+          
+          > 0) {
           console.log("Flow stacks before event:", this.flowsStack.length);
           let latest = events[events.length - 1];
           console.log("latest status:", latest.status);
@@ -117,7 +121,8 @@ export class OfflineChatService implements IChatService {
               this.messages$,
               this.flowStatus$,
               this.contactFieldService,
-              this.botTyping$
+              this.botTyping$,
+              this.habitService
             );
             this.flowsStack.push(newFlow);
             this.settingsService.getUserSetting("CHAT_DELAY").subscribe((delay) => {
